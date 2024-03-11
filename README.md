@@ -1,4 +1,4 @@
-![Image](http://caribesphaneron.com/wp-content/uploads/2024/03/void_safe_logo.png)
+<img align="center" width="300" height="300" src="http://caribesphaneron.com/wp-content/uploads/2024/03/void_safe_logo.png">
 
 &nbsp;&nbsp;&nbsp;&nbsp; **VoidSafe** is a library that brings a [**void-safe**](https://en.wikipedia.org/wiki/Void_safety), [**None-aware**](https://peps.python.org/pep-0505/) approach to Python3-written scripts and applications. It provides software developers with resources to apply _null-safe-like_ principles to their codebase, guaranteeing that **safe** operations can be performed on **potentially unsafe** instances, which helps assuring that your software will be able to handle many memory-access problems at runtime.
 

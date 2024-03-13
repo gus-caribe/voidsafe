@@ -3,6 +3,13 @@
 
 ----
 
+## Release `v0.1.1`
+&nbsp;&nbsp;&nbsp;&nbsp; In this release, the directory named "nonesafe" was renamed to "voidsafe" to match the module name.
+
+- **Bugs**
+
+    1. Library directory does not match module name.
+
 ## Release `v0.1.0`
 &nbsp;&nbsp;&nbsp;&nbsp; This release brings the basic API with the essential resources required to perform coalescing operations. The **docstrings** are still not fully covered. The `__repr__` and `__str__` magic methods are also not fully covered. The **API.md** file and the **/examples** directory won't be filled at this release. And lastly, the **unit tests** haven't still been elaborated.
 

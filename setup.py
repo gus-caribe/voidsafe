@@ -14,7 +14,7 @@ if sys.version_info.major != 3 and sys.version_info.minor < 11:
 
 setup(
     name = "voidsafe",
-    version = "0.1.0",
+    version = "0.1.1",
     author = "Gustavo Cardoso Ribeiro",
     author_email = "gustavocaribe@caribesphaneron.com",
     url = "https://github.com/gus-caribe/voidsafe",

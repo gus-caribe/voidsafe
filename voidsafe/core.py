@@ -1,133 +1,62 @@
-'''
-    ## VoidSafe
-
-    \t `VoidSafe` is a library that brings a `void-safe`, `None-aware` approach to            \
-    Python3-written scripts and applications. It provides software developers with resources  \
-    to apply `null-safe-like` principles to their codebase, guaranteeing that `safe`          \
-    operations can be performed on `potentially unsafe` instances, which helps assuring that  \
-    your software will be able to handle many memory-access problems at runtime.
-
-    \t By being entirely `type-hinted`, this library works well when associated with most     \
-    `static type checkers`. When combined with a linter that's capable of predicting `unboud` \
-    or `undefined` variables, this library helps the developer to identify problems with      \
-    their code even before running it.
-
-    \t The inspiration comes from the concept of `Null Safety`, which is adopted by several   \
-    programming languages, such as `Dart`, `Kotlin` and `C#`.
-    ...
-
-    ------------------------------------------------------------------------------------------
-    ## `Special Constants`
-
-    \t A `Special Constant` is used to perform crucial tasks or to represent values that \
-    serve for the good usage of this library. What do we expect from a special constant  \
-    syntax and semantic highlighting?
-
-    - A `special color` that highlights the instance, making it easy to distinguish it 
-    from ordinary instances;
-    - A `docstring` that describes what the instance is supposed to perform or represent;
-    - A `syntax` that doesn't pollute your code.
-
-    \t Unfortunately, we couldn't find a way to declare, instantiate or decorate this    \
-    library's resources in a way that the available linters could provide the            \
-    developers with all of what's mentioned above. That said, we opted to provide two    \
-    ways of using special constants:
-
-    - `ThisWay` \\
-    This is done by `class-decorating` a function with the special constant's type class.
-    The result is an `instance` of that class (i.e. the Special Constant).
-
-        - PROS:
-
-            - Some linters will highlight it with the same color used to highlight       \
-            `functions` and `methods`. That little hack allows for `distinguishing` it   \
-            from ordinary instances;
-
-            - It allows for declaring it with `UpperCamelCase` syntax, which tends to    \
-            be "cleaner" than the the second way to use it.
-        
-        - CONS:
-
-            - Most linters will either:
-            
-            1. (correctly) Interpret it as an instance but then highlight it as an       \
-            `ordinary variable`; 
-
-            2. Misinterpret what role the decorator should perform and then lose the     \
-            reference to the instance's docstring, which `wipes the docstring` that      \
-            should be shown on the tooltip of the IDE.
-
-    - `THISWAY` \\
-    This is done by declaring a Final-typed `constant` and assignining to it the value 
-    holded by the instance described above.
-
-        - PROS:
-
-            - By declaring it with `UPPERCASE` syntax, which configures a constant in    \
-            Python, most linters will highlight it with the color that's reserved for    \
-            constants, which helps `distiguishing` it from other instances;
-
-            - Because it's a regular constant definition, the `docstring` attached to    \
-            its assignment will be correctly addressed by most of the available linters. \
-            That way, the developer will be able to see a docstring explaining the       \
-            Special Constant's usage.
-        
-        - CONS:
-
-            - Python doesn't support defining an UpperCamelCase declaration as constant. \
-            The only constants that can contain this syntax are the built-in ones, such  \
-            as `None`, `True`, `False` and a few others. That's is a shame, because      \
-            the `Undefined` Special Constant from the present library resides in the     \
-            same semantic level as the `None` built-in constant, and it performs a       \
-            similar role. This nature of the language results in the following           \
-            implications: 
-            
-            1. It forces you to declare the Special Constant with an `UPPERCASE` syntax;
-
-            2. That form of declaration tends to `pollute` your code as it "screams"     \
-            the constant's name, especially if the constant is used frequently.
-    ...
-'''
+"""
+## VoidSafe
+-----------
+    \
+`VoidSafe` is a library that brings a `void-safe`, `None-aware` approach to
+Python3-written scripts and applications. It provides software developers with resources
+to apply `null-safe`-like principles to their codebase, guaranteeing that safe
+operations can be performed on `potentially unsafe instances [2.1]`, which helps assuring 
+that your software will be able to handle many memory-access problems at runtime.  
+    \
+By being entirely `type-hinted`, this library works well when associated with most
+`static type checkers`. When combined with a linter that's capable of predicting `unboud`
+or `undefined` variables, this library helps the developer to identify problems with
+their code even before running it.  
+    \
+The inspiration comes from the concept of `Null Safety`, which is adopted by several
+programming languages, such as `Dart`, `Kotlin` and `C#`.  
+"""
 
 from types import NoneType
 from typing import Self, final, Any, Callable, Final, Generic, Optional, Type, TypeVar, Union
 
 
 _T = TypeVar('_T')
-'''
-    `_T` is the TypeVar used in most of the `Generic` types of this module.
-'''
+"""
+`_T` is the TypeVar used in most of the `Generic` types of this module.
+"""
 
 
 @final
 class UndefinedType:
-    '''
-        \t `UndefinedType` is similar to `types.NoneType` as the first one represents the    \
-        type of the `Undefined` Special Constant the same way the second one represents the  \
-        type of the `None` built-in constant. 
+    """
+        \
+    `UndefinedType` is a `Special Type [1.2]` that's similar to `NoneType` as the first one 
+    represents the type of the `Undefined` `Special Constant [1.3]` the same way the second 
+    one represents the type of the `None` built-in constant. 
 
-        - Example:
+    - Example:
 
-            ```python
-            >>> type(None)
-            NoneType
-
-            >>> type(Undefined)
-            UndefinedType
-            ```
-        ...
-
-        -----
-        ##### Min. API Version: `0.1.0`
-    '''
+        ```python
+        >>> from voidsafe import VoidSafe, value
+        >>> 
+        >>> emptyDict: dict = {}
+        >>> 
+        >>> unsafeResource = VoidSafe(emptyDict)['undefined']
+        >>> extractedValue = unsafeResource >> value
+        >>> 
+        >>> print(extractedValue)
+        Undefined
+        >>> type(extractedValue)
+        UndefinedType
+        ```
+    ...
+    """
 
     def __init__(self, _: Callable[[], None]):
         pass
 
     def __repr__(self) -> str:
-        return "UndefinedType()"
-    
-    def __str__(self) -> str:
         return "Undefined"
 
 
@@ -138,73 +67,68 @@ def Undefined() -> None:
 
 
 UNDEFINED: Final[UndefinedType] = Undefined
-'''
-    ##### ‣ Aliases: `Undefined`
-    ---
+"""
+#### Aliases: `Undefined`
+---
+    \
+`UNDEFINED` is a `Special Constant [1.3]` that's meant to represent an instance's  
+resource that hasn't been defined before being accessed, which differs from an 
+instance's `Optional` resource that has been defined as `None`.
+    \
+It is usually obtained from an attempt to getting resources from a `Potentially 
+Unsafe Instance [2.1]` that is being checked by the `VoidSafe` `Special Agent [1.4]`.
 
-    \t `UNDEFINED` is a `Special Constant` that's meant to represent an instance's        \
-    resource that hasn't been defined before being accessed, which differs from an        \
-    instance's `Optional` resource that has been defined as `None`.
+- Example:
 
-    \t It is usually obtained from an attempt to getting resources from a `potentially    \
-    unsafe` instance that is being checked by a `_VoidSafe` wrapper.
-
-    - Example:
-
-        ```python
-        >>> from typing import Optional
-        >>> from random import random
-        >>> from voidsafe import VoidSafe, value
-        >>> 
-        >>> class EmptyClass:
-        ...     def __setattr__(self, name, value):
-        ...         object.__setattr__(self, name, value)
-        ... 
-        >>> emptyInstance = EmptyClass()
-        >>> 
-        >>> if random() < 0.01:
-        ...     emptyInstance.doesntExist = "This probably won't happen"
-        ... 
-        >>> # tying to access a potentially unsafe resource
-        >>> print( VoidSafe(emptyObject).doesntExist )
-        _VoidSafe(Undefined)
-        >>> 
-        >>> # extracting its value
-        >>> print( VoidSafe(emptyObject).doesntExist >> value )
-        Undefined
-        ```
-    ...
-
-    -----
-    ##### Min. API Version: `0.1.0`
-'''
+    ```python
+    >>> from typing import Optional
+    >>> from random import random
+    >>> from voidsafe import VoidSafe, value
+    >>> 
+    >>> class Empty:
+    ...     def __setattr__(self, name, value):
+    ...         object.__setattr__(self, name, value)
+    ... 
+    >>> emptyInstance = Empty()
+    >>> 
+    >>> if random() < 0.01:
+    ...     emptyInstance.doesntExist = "This probably won't happen"
+    ... 
+    >>> # tying to access a 'Potentially Unsafe Resource [2.2]' ('doesntExist')
+    >>> print( VoidSafe(emptyObject).doesntExist )
+    VoidSafe(Undefined)
+    >>> 
+    >>> # extracting its value
+    >>> print( VoidSafe(emptyObject).doesntExist >> value )
+    Undefined
+    ```
+...
+"""
 
 
 Undefined.__doc__ = UNDEFINED.__doc__
 
 
 class _CoalesceAction():
-    '''
-        \t `_CoalesceAction` creates a wrapper around a value that is supposed to be \
-        assigned to a resource, but only if it attends the condition of a coalescing \
-        `Infix`.
-        
-        - Example:
+    """
+        \
+    `_CoalesceAction` creates a wrapper around a value that is supposed to be 
+    assigned to a resource, but only if it attends the condition of a coalescing 
+    `Infix`.
+    
+    - Example:
 
-            ```python
-            from voidsafe import VoidSafe, ifnone, _CoalesceAction
-            
-            testDict: dict = {'none': None}
-            
-            VoidSafe(testDict)['none'] = ifnone << "default value"
-            # the previous line can be refactored like the following:
-            VoidSafe(testDict)['none'] = _CoalesceAction("default value", [None])
-            ```
-        ...
+        ```python
+        from voidsafe import VoidSafe, ifnone, _CoalesceAction
         
-        -----
-        ##### Min. API Version: `0.1.0`
-    '''
+        testDict: dict = {'none': None}
+        
+        VoidSafe(testDict)['none'] = ifnone << "default value"
+        # the previous line can be refactored like the following:
+        VoidSafe(testDict)['none'] = _CoalesceAction("default value", [None])
+        ```
+    ...
+    """
 
     __slots__ = ('_content', '_checkObjects')
 
@@ -219,24 +143,22 @@ _CHILD: Final[int] = 1
 
 
 class _VoidSafeTrailing():
-    '''
-        \t `_VoidSafeTrailing` is a wrapper around a chain of resource accesses starting from a   \
-        `VoidSafe(foo)` call. 
-        
-        - Example:
+    """
+        \
+    `_VoidSafeTrailing` is a wrapper around a chain of resource accesses starting from a 
+    `VoidSafe(foo)` call. 
+    
+    - Example:
 
-            ```python
-            from voidsafe import VoidSafe
+        ```python
+        from voidsafe import VoidSafe
 
-            # ---------  From here on, everything is wrapped into a '_VoidSafeTrailing'
-            # ---------  v
-            VoidSafe(foo).attribute['item'].call()
-            ```
-        ...
-        
-        -----
-        ##### Min. API Version: `0.1.0`
-    '''
+        # ---------  From here on, everything is wrapped into a '_VoidSafeTrailing'
+        # ---------  v
+        VoidSafe(foo).attribute['item'].call()
+        ```
+    ...
+    """
 
     _latestGetItemKey: Any = Undefined
     _latestGetAttrName: str = ""
@@ -327,39 +249,40 @@ class _VoidSafeTrailing():
     # self == __other
     def __eq__(self, __other: Any) -> bool:
         return self._bond[_CHILD] == __other
+    
+    def __repr__(self) -> str:
+        return f"NoneSafe({self._bond[_CHILD]})"
 
 
 class _VoidSafeLeading():
-    '''
-        \t `_VoidSafeLeading` is a proxy that grabs the `potentially unsafe instance` being       \
-        checked by a `VoidSafe(foo)` call (i.e. The root element from a `VoidSafe` operation).
+    """
+        \
+    `_VoidSafeLeading` is a proxy that grabs the `potentially unsafe instance` being  
+    checked by a `VoidSafe(foo)` call (i.e. The root element from a `VoidSafe` operation).
+        \
+    It is responsible for addressing to the `_VoidSafeTrailing` wrapper any operation that 
+    follows.
+        \
+    This entity had to be created apart from `_VoidSafeTrailing` because at the time it is 
+    called, there is no resource being accessed from the checked instance. That means that    
+    there is no chance that the protected value is `Undefined` at runtime, so the operations  
+    with `ifndef` coalescing `Infix` souldn't be allowed with `_VoidSafeLeading`-protected    
+    instances.
+    - Example:
 
-        \t It is responsible for addressing to the `_VoidSafeTrailing` wrapper any operation that \
-        follows.
+        ```python
+        from typing import Optional
+        from voidsafe import VoidSafe, ifndef
 
-        \t This entity had to be created apart from `_VoidSafeTrailing` because at the time it is \
-        called, there is no resource being accessed from the checked instance. That means that    \
-        there is no chance that the protected value is `Undefined` at runtime, so the operations  \
-        with `ifndef` coalescing `Infix` souldn't be allowed with `_VoidSafeLeading`-protected    \
-        instances.
-        - Example:
+        unsafeStr: Optional[str] = None
+        safeStr: str = ""
 
-            ```python
-            from typing import Optional
-            from voidsafe import VoidSafe, ifndef
-
-            unsafeStr: Optional[str] = None
-            safeStr: str = ""
-
-            #  ---------------------------- Not possible
-            #  ---------------------------- v
-            safeStr = VoidSafe(unsafeStr) <<ifndef>> "default value"
-            ```
-        ...
-        
-        -----
-        ##### Min. API Version: `0.1.0`
-    '''
+        #  ---------------------------- Not possible
+        #  ---------------------------- v
+        safeStr = VoidSafe(unsafeStr) <<ifndef>> "default value"
+        ```
+    ...
+    """
 
     _check: Any = Undefined
 
@@ -409,60 +332,79 @@ class _VoidSafeLeading():
     # self == __other
     def __eq__(self, __other: Any) -> bool:
         return self._check == __other
+    
+    def __repr__(self) -> str:
+        return f"NoneSafe({self._check})"
 
 
 class _VoidSafeInitiator(Generic[_T]):
-    '''
-        \t `_VoidSafeInitiator` receives the instance that will be checked and passes it along to \
-        the `_VoidSafeLeading` wrapper.
+    """
+        \
+    `_VoidSafeInitiator` receives the instance that will be checked and passes it along to 
+    the `_VoidSafeLeading` wrapper.
+        \
+    It is also responsible for "tricking" the linter into interpreting the instance passed 
+    to the `check` parameter of its `__call__` method as an instance of the same type passed 
+    to the Special Constant `VoidSafe`'s `__getitem__` method (i.e. `VoidSafe[Type]`).
+    - Example:
 
-        \t It is also responsible for "tricking" the linter into interpreting the instance passed \
-        to the `check` parameter of its `__call__` method as an instance of the same type passed  \
-        to the Special Constant `VoidSafe`'s `__getitem__` method (i.e. `VoidSafe[Type]`).
-        - Example:
+        ```python
+        >>> from typing import Optional
+        >>> from voidsafe import VoidSafe, value
+        >>> 
+        >>> unsafeStr: Optional[str] = None
+        >>> 
+        >>> # --------  '_VoidSafeInitiator[str]' is the result of 'VoidSafe[str]'
+        >>> # --------  v
+        >>> VoidSafe[str](unsafeStr).upper() >> value
+        Undefined
+        ```
 
-            ```python
-            >>> from typing import Optional
-            >>> from voidsafe import VoidSafe, value
-            >>> 
-            >>> unsafeStr: Optional[str] = None
-            >>> 
-            >>> # --------  '_VoidSafeInitiator[str]' is the result of 'VoidSafe[str]'
-            >>> # --------  v
-            >>> VoidSafe[str](unsafeStr).upper() >> value
-            Undefined
-            ```
-
-            Most linters will highlight the `upper` method semantically, even if `unsafeStr` is 
-            `None`.
-        ...
-        
-        -----
-        ##### Min. API Version: `0.1.0`
-    '''
+        Most linters will highlight the `upper` method semantically, even if `unsafeStr` is 
+        `None`.
+    ...
+    """
 
     def __call__(self, check: Optional[_T]) -> Union[_VoidSafeLeading, _T]:
+        """
+            \
+        The instance passed between these parenthesis will be wrapped into a safe scope
+        where every attempt to access, set or call the instance itself or any of its
+        resources results in a new wrapper.
+
+        ...
+        """
         return _VoidSafeLeading(check)
 
 
 class _VoidSafeInfix(_VoidSafeInitiator):
-    '''
-        \t `_VoidSafeInfix` is a class that is used as a decorator for the `VoidSafe` function,   \
-        resulting on an `instance` that will be further called the `VoidSafe` Special Constant.
-
-        \t It also works as a proxy, allowing you to use its `__getitem__` to receive a type and  \
-        pass it along to the `_VoidSafeInitiator`.
-        ...
-        
-        -----
-        ##### Min. API Version: `0.1.0`
-    '''
+    """
+        \
+    `_VoidSafeInfix` is a class that is used as a decorator for the `VoidSafe` function, 
+    resulting on an `instance` that will be further called the `VoidSafe` Special Constant.
+        \
+    It also works as a proxy, allowing you to use its `__getitem__` to receive a type and  
+    pass it along to the `_VoidSafeInitiator`.
+    ...
+    """
 
     def __init__(self, _: Callable[[], None]):
         pass
     
     def __getitem__(self, _: Type[_T]) -> _VoidSafeInitiator[_T]:
+        """
+            \
+        The type passed between these brackets will be passed along to the `VoidSafe.__call__`'s
+        only parameter, where it's wrapped into an `Optional`. This tells the linter to highlight 
+        semantically and suggest all the methods and attributes available for the type passed as 
+        argument.
+
+        ...
+        """
         return _VoidSafeInitiator[_T]()
+    
+    def __repr__(self) -> str:
+        return "NoneSafe"
 
 
 @_VoidSafeInfix
@@ -472,82 +414,92 @@ def VoidSafe() -> None:
 
 
 VOIDSAFE: Final[_VoidSafeInfix] = VoidSafe
-'''
-    ##### ‣ Aliases: `VoidSafe`
-    ---
+"""
+#### Aliases: `VoidSafe`
+---
+    \
+`VOIDSAFE` is a `Special Agent [1.4]` that acts as a wrapper, protecting `Potentially   
+Unsafe Instances [2.1]` from having their `Potentially Unsafe Resources [2.2]` accessed.
+    \
+Usually, you can find if an instance/resource is `Potentially Unsafe [2]` by checking   
+if its values are into the `Void` `Special Constant [1.3]` provided by the present library.
+Type `'VOID'` to see how it's done.
+- Example:
 
-    ### ‣ VOIDSAFE
-
-    \t `VOIDSAFE` is a `Special Constant` that acts as a wrapper protecting `potentially \
-    unsafe instances` from having their `potentially unsafe resources` accessed.
+    ```python
+    >>> from voidsafe import VoidSafe, ifvoid
+    >>> from typing import Any
+    >>> from random import random
+    >>> 
+    >>> class Empty:
+    ...     def __setattr__(self, __name, __value):
+    ...         object.__setattr__(self, __name, __value)
+    ... 
+    >>> def foo():
+    ...     return "bar"
     ...
+    >>> emptyInstance: Empty = Empty()
+    >>> testDict: dict[str, Any] = {'probablyNone': None, 'pi': 3.14}
+    >>> 
+    >>> if random() < 0.01:
+    ...     testDict['probablyUndefined'] = "This probably won't happen"
+    ...     testDict['probablyNone'] = "Neither will this"
+    ...     emptyInstance.probablyUndefined = "Or this"
+    ...     emptyInstance.probablyNotImplemented = foo
+    ... 
+    >>> # will return 3.14 in 100 out of 100 attempts:
+    >>> VoidSafe(testDict)['pi'] >> value 
+    3.14
+    >>> # will return "This probably won't happen" in 1 out of 100 attempts:
+    >>> VoidSafe(testDict)['probablyUndefined'] >> value 
+    Undefined
+    >>> # will return "Neither will this" in 1 out of 100 attempts:
+    >>> VoidSafe(testDict)['probablyNone'] >> value
+    None
+    >>> # will return "NEITHER WILL THIS" in 1 out of 100 attempts:
+    >>> VoidSafe(testDict)['probablyNone'].upper() >> value
+    Undefined
+    >>> 
+    >>> potUnsafeResource = VoidSafe(testDict)['probablyNone'] >> value
+    >>> 
+    >>> # even knowing that 'ptUnsafeResource' is probably set as 'None', you can pass a 
+    >>> # type to 'VoidSafe' to tell the linter to highlight and suggest valid methods for 
+    >>> # that type (that's what's called 'tricking the linter')
+    >>> VoidSafe[str](potUnsafeResource).upper() >> value
+    Undefined
+    >>> 
+    >>> # will return "Or this" in 1 out of 100 attempts:
+    >>> VoidSafe(emptyInstance).probablyUndefined >> value 
+    Undefined
+    >>> # will return "bar" in 1 out of 100 attempts:
+    >>> VoidSafe(emptyInstance).foo() >> value 
+    Undefined
+    >>> 
+    >>> VoidSafe(testDict)['probablyUndefined'] = ifvoid << 'assignment #1'
+    >>> VoidSafe(testDict)['probablyNone'] = ifvoid << 'assignment #2'
+    >>> 
+    >>> # will return "This probably won't happen" in 1 out of 100 attempts
+    >>> VoidSafe(testDict)['probablyUndefined']
+    'assignment #1'
+    >>> # will return "Neither will this" in 1 out of 100 attempts
+    >>> VoidSafe(testDict)['probablyNone']
+    'assignment #2'
+    ```
 
-    #### ‣ Potentially Unsafe Instances:
+...
+"""
 
-    \t `Potentially unsafe instances` are those that might be keeping a value that is    \
-    not expected for a certain operation (like getting `None` when you expect a `str`).
-    - Example:
-
-        ```python
-        >>> from typing import Optional
-        >>> from random import random
-        >>> 
-        >>> unsafeStr: Optional[str] = None
-        >>> 
-        >>> if random() < 0.01:
-        ...     unsafeStr = "This probably won't happen"
-        ...
-        >>> # 'unsafeStr' holds 'None' as its value
-        >>> print( unsafeStr.upper() )
-        AttributeError: 'NoneType' object has no attribute 'upper'
-        ```
-    ...
-
-    #### ‣ Potentially Unsafe Resources
-
-    \t `Potentially unsafe resources` of an instance refers to the instance's            \
-    `.attributes`, `[items]` and `calls()` that hold `None` as their value OR the ones   \
-    that haven't been `defined` at the moment they are being accessed.
-    - Example:
-
-        ```python
-        >>> from typing import Optional
-        >>> from random import random
-        >>> 
-        >>> class EmptyClass:
-        ...     def __setattr__(self, name, value):
-        ...         object.__setattr__(self, name, value)
-        ... 
-        >>> emptyInstance = EmptyClass()
-        >>> 
-        >>> if random() < 0.01:
-        ...     emptyInstance.unsafeStr = "This probably won't happen"
-        ... 
-        >>> # 'unsafeStr' hasn't been defined for 'emptyInstance'
-        >>> print( emptyInstance.unsafeStr )
-        AttributeError: 'EmptyClass' object has no attribute 'unsafeStr'
-        ```
-    ...
-
-    \t Usually, you can find if an instance/resource is potentially unsafe by checking   \
-    if their values are into the `VOID` Special Constant provided by the present library.\
-    Type `'VOID'` to see its usage.
-    ...
-    
-    -----
-    ##### Min. API Version: `0.1.0`
-'''
+VoidSafe.__doc__ = VOIDSAFE.__doc__
 
 
 class _ValueInfix():
-    '''
-        `_ValueInfix` is a class that is used as a decorator for the `value` function, resulting  \
-        on an `instance` that will be further called the `VALUE` Special Constant.
-        ...
-        
-        -----
-        ##### Min. API Version: `0.1.0`
-    '''
+    """
+        \
+    `_ValueInfix` is a class that is used as a decorator for the `value` function, resulting  
+    on an `instance` that will be further called the `VALUE` `Special Agent [1.4]`.
+
+    ...
+    """
     
     _func: Callable[[Any], Any] = lambda _: _
 
@@ -559,6 +511,9 @@ class _ValueInfix():
     # other >> self
     def __rrshift__(self, other: Any) -> Any:
         return self._func(other)
+    
+    def __repr__(self) -> str:
+        return "value"
 
 
 @_ValueInfix
@@ -573,39 +528,46 @@ def value(other: Any) -> Any:
 
 
 VALUE: Final[_ValueInfix] = value
-'''
-    ##### ‣ Aliases: `value`
-    ----
+"""
+#### Aliases: `value`
+----
+    \
+`VALUE` is a `Special Agent [1.4]` that allows you to use a `VoidSafe` chain of  
+operations with the `>>` operator followed by itself. This works as a getter that  
+extracts the value that is being kept by `VoidSafe` or any of its subproducts.
+- Example:
 
-    \t `VALUE` is a `Special Constant` that allows you to use a `VoidSafe` chain of           \
-    operations with the `>>` operator followed by `value`. This works as a getter that        \
-    extracts the value that is being kept by `VoidSafe` or any of its subproducts.
-    - Example:
+    ```python
+    >>> from typing import Optional
+    >>> from voidsafe import VoidSafe, value
+    >>> 
+    >>> unsafeStr: Optional[str] = 'content'
+    >>> 
+    >>> print( VoidSafe(unsafeStr).upper() >> value )
+    'CONTENT'
+    >>> 
+    >>> # now look what happens when it's set as 'None'
+    >>> # (which doesn't have a 'upper' method)
+    >>> unsafeStr = None
+    >>> 
+    >>> print( VoidSafe(unsafeStr).upper() >> value )
+    Undefined
+    ```
+...
+"""
 
-        ```python
-        >>> from typing import Optional
-        >>> from voidsafe import VoidSafe, value
-        >>> 
-        >>> unsafeStr: Optional[str] = "content"
-        >>> print( VoidSafe(unsafeStr).upper() >> value )
-        CONTENT
-        ```
-    ...
-    
-    -----
-    ##### Min. API Version: `0.1.0`
-'''
+value.__doc__ = VALUE.__doc__
 
 
 class _VoidInfix:
-    '''
-        \t `_VoidInfix` is a class that is used as a decorator for the `Void` function, resulting \
-        on an `instance` that will be further called the `VOID` Special Constant.
-        ...
-        
-        -----
-        ##### Min. API Version: `0.1.0`
-    '''
+    """
+        \
+    `_VoidInfix` is a class that is used as a decorator for the `Void` function, resulting 
+    on an `instance` that will be further called the `VOID` Special Constant.
+
+    ...
+    """
+
     _list: list[Union[NoneType, UndefinedType]] = []
 
     def __init__(self, func: Callable[[], list[Union[NoneType, UndefinedType]]]):
@@ -625,6 +587,9 @@ class _VoidInfix:
             check = other >> value
         
         return check in self._list
+    
+    def __repr__(self) -> str:
+        return "Void"
 
 
 @_VoidInfix
@@ -634,81 +599,80 @@ def Void() -> list[Union[NoneType, UndefinedType]]:
 
 
 VOID: Final[_VoidInfix] = Void
-'''
-    ##### ‣ Aliases: `value`
-    ----
+"""
+#### Aliases: `value`
+----
+    \
+`VOID` is a `Special Constant [1.3]` that keeps a list containing both `None` built-in  
+constant and `Undefined` Special Constant. It can be used to find  if a resource is either 
+set as `None` or rather never been set (i.e. `Undefined`).
+- Example:
 
-    \t `VOID` is a `Special Constant` that keeps a list containing both `None` built-in  \
-    constant and `UNDEFINED` Special Constant.
+    ```python
+    >>> from voidsafe import VoidSafe, Void, value
+    >>> 
+    >>> testDict: dict[str, Any] = {}
+    >>> 
+    >>> testDict['none'] = None
+    >>> testDict['filled'] = 'filled'
+    >>> 
+    >>> # here's what happens when you try to access a resource
+    >>> # that has never been defined for an instance using 'VoidSafe'
+    >>> VoidSafe(testDict)['undefined'] >> value
+    Undefined
+    >>> 
+    >>> # now, we'll check their relationship to 'Void':
+    >>> 
+    >>> testDict['none'] in Void
+    True
+    >>> testDict['filled'] in Void
+    False
+    >>> VoidSafe(testDict)['undefined'] in Void
+    True
+    ```
+...
+"""
 
-    \t It can be used to find out if a resource is either set as `None` or rather never  \
-    been set (i.e. `UNDEFINED`).
-    - Example:
-
-        ```python
-        >>> from voidsafe import VoidSafe, Void, value
-        >>> 
-        >>> testDict: dict[str, Any] = {}
-        >>> 
-        >>> testDict['none'] = None
-        >>> testDict['filled'] = 'filled'
-        >>> 
-        >>> # Here's what happens when you try to access a resource
-        >>> # that has never been defined for an instance using 'VoidSafe'
-        >>> VoidSafe(testDict)['undefined'] >> value
-        Undefined
-        >>> 
-        >>> # Now, we'll check their relationship to 'Void'
-        >>> 
-        >>> testDict['none'] in Void
-        True
-        >>> testDict['filled'] in Void
-        False
-        >>> VoidSafe(testDict)['undefined'] in Void
-        True
-        ```
-    ...
-    
-    -----
-    ##### Min. API Version: `0.1.0`
-'''
+Void.__doc__ = VOID.__doc__
 
 
 VoidTypes: Final[tuple[Type, Type]] = (NoneType, UndefinedType)
-'''
-    \t `VoidTypes` is a Final list that contains both `NoneType` and `UndefinedType` types.   \
-    These are the types used to instantiate a `None` built-in constant and an `UNDEFINED`     \
-    Special Constant.
-    ...
-    
-    -----
-    ##### Min. API Version: `0.1.0`
-'''
+"""
+    \
+`VoidTypes` is a `Special Object [1.1]`. It is a Final list that contains both `NoneType` 
+and `UndefinedType` types. These are the types used to instantiate a `None` built-in 
+constant and an `Undefined` `Special Constant [1.3]`.
+- Example:
+
+    ```python
+    >>> from voidsafe import VoidTypes, Undefined
+    >>> 
+    >>> type(None) in VoidTypes
+    True
+    >>> type(Undefined) in VoidTypes
+    True
+    ```
+...
+"""
 
 
 _LeftType = TypeVar("_LeftType", Any, Any)
-'''
-    `_LeftType` is used to represent an element positioned to the left of a coalescing
-    `Infix`.
-    ...
-    
-    -----
-    ##### Min. API Version: `0.1.0`
-'''
+"""
+`_LeftType` is used to represent an element positioned to the left of a coalescing `Infix`.
+"""
 
 class _Coalesce(Generic[_LeftType]):
-    '''
-        \t `_Coalesce` is the base class of a group of coalescing proxies that sould be           \
-        instantiated by a coalescing `Infix`.
-
-        \t It receives an element that's positioned at its left and provides the `>>` operator,   \
-        allowing to perform coalescing operations. That is done by returning the element at the   \
-        right of `>>` if the attribute `_checkObjects` contains the element at the left.
-        ...
-        
-        -----
-        ##### Min. API Version: `0.1.0`
-    '''
+    """
+        \
+    `_Coalesce` is the base class of a group of coalescing proxies that sould be instantiated 
+    by a coalescing `Infix`.
+        \
+    It receives an element that's positioned at its left and provides the `>>` operator,   
+    allowing to perform coalescing operations. That is done by returning the element at the   
+    right of `>>` if the attribute `_checkObjects` contains the element at the left.
+    
+    ...
+    """
 
     _left: _LeftType
     _checkObjects: list[Union[NoneType, UndefinedType]] = []
@@ -728,14 +692,39 @@ class _Coalesce(Generic[_LeftType]):
         return other
 
 class _UndefinedCoalesce(_Coalesce[_VoidSafeTrailing]):
+    """
+        \
+    Subtype of `_Coalesce` dedicated to operations being done to a `_VoidSafeTrailing`'s
+    protected instance when its value is `UNDEFINED`.
+
+    ...
+    """
+
     _checkTypes: Final[list[UndefinedType]] = [Undefined]
 
 
 class _NoneCoalesce(_Coalesce[Any]):
+    """
+        \
+    Subtype of `_Coalesce` dedicated to operations being done to any instance when 
+    its value is `None`.
+
+    ...
+    """
+
     _checkTypes: Final[list[NoneType]] = [None]
 
 
 class _VoidCoalesce(_Coalesce[Any]):
+    """
+        \
+    Subtype of `_Coalesce` dedicated to operations being done to any instance when 
+    its value is either `None` or a `_VoidSafeTrailing`' when its protected value
+    is `Undefined`.
+
+    ...
+    """
+
     _checkTypes: Final[list[Union[NoneType, UndefinedType]]] = Void._list
 
 
@@ -745,8 +734,19 @@ _CoalesceType = TypeVar(
     _UndefinedCoalesce, 
     _VoidCoalesce
 )
+"""
+`_CoalesceType` is a generalization for all of the `_Coalesce` class subtypes.
+"""
 
 class _IfNdefInfix(object):
+    """
+        \
+    `_IfNdefInfix` is a class that is used as a decorator for the `ifndef` function, 
+    resulting on an `instance` that will further be called the `IFNDEF` `Special Operator [1.5]`.
+
+    ...
+    """
+
     __slots__ = ('_func')
 
     def __init__(self, func: Callable[[_VoidSafeTrailing], _UndefinedCoalesce]):
@@ -759,8 +759,22 @@ class _IfNdefInfix(object):
     # self << other
     def __lshift__(self, right: Any) -> _CoalesceAction:
         return _CoalesceAction(right, [Undefined])
+    
+    def __repr__(self) -> str:
+        return "ifndef"
 
 class _CoalesceInfix(Generic[_CoalesceType]):
+    """
+        \
+    `_CoalesceInfix` is a class that provides a `Generic` parameter that specifies a
+    `_Coalesce` type. That allows for creating `TypeAliases` for `_CoalesceInfix` that
+    specify which coalescing operation will be done.
+        \
+    This class and its aliases will be used as decorators for `Special Operators [1.5]`.
+
+    ...
+    """
+
     __slots__ = ('_func')
 
     def __init__(self, func: Callable[[Any], _CoalesceType]):
@@ -781,8 +795,30 @@ class _CoalesceInfix(Generic[_CoalesceType]):
 
         return _CoalesceAction(right, checkObjects)
 
-_IfNoneInfix = _CoalesceInfix[_NoneCoalesce]
-_IfVoidInfix = _CoalesceInfix[_VoidCoalesce]
+class _IfNoneInfix(_CoalesceInfix[_NoneCoalesce]):
+    """
+        \
+    `_IfNoneInfix` is a class that is used as a decorator for the `ifnone` function, 
+    resulting on an `instance` that will further be called the `IFNONE` `Special Operator [1.5]`.
+
+    ...
+    """
+
+    def __repr__(self) -> str:
+        return "ifnone"
+
+
+class _IfVoidInfix(_CoalesceInfix[_VoidCoalesce]):
+    """
+        \
+    `_IfVoidInfix` is a class that is used as a decorator for the `ifvoid` function, 
+    resulting on an `instance` that will further be called the `IFVOID` `Special Operator [1.5]`.
+
+    ...
+    """
+
+    def __repr__(self) -> str:
+        return "ifvoid"
 
 
 @_IfNdefInfix
@@ -791,6 +827,36 @@ def ifndef(left: _VoidSafeTrailing) -> _UndefinedCoalesce:
     return _UndefinedCoalesce(left)
 
 IFNDEF: Final[_IfNdefInfix] = ifndef
+"""
+#### Aliases: `ifndef`
+----
+    \
+`IFNDEF` is a `Special Operator [1.5]` that performs coalescing operations on `Undefined` 
+`Potentially Unsafe Resources [2.2]` accessed from instances protected by the `VoidSafe` 
+`Special Agent [1.4]`.
+- Example:
+
+    ```python
+    >>> from voidsafe import VoidSafe, ifndef
+    >>> from typing import Any
+    >>> 
+    >>> testDict: dict[str, Any] = {'pi': 3.14}
+    >>> 
+    >>> # ['pi'] is already defined as 3.14
+    >>> VoidSafe(testDict)['pi'] << ifndef >> 123
+    3.14
+    >>> # now with an item that has never been defined
+    >>> VoidSafe(testDict)['undefined'] << ifndef >> 'content'
+    'content'
+    >>> 
+    >>> VoidSafe(testDict)['undefined'] = ifndef << 'first assignment'
+    >>> VoidSafe(testDict)['undefined'] = ifndef << 'second assignment' # not 'Undefined' anymore
+    >>> 
+    >>> testDict['undefined']
+    'first assignment'
+    ```
+...
+"""
 
 @_IfNoneInfix
 def ifnone(left: Any) -> _NoneCoalesce:
@@ -798,6 +864,36 @@ def ifnone(left: Any) -> _NoneCoalesce:
     return _NoneCoalesce(left)
 
 IFNONE: Final[_IfNoneInfix] = ifnone
+"""
+#### Aliases: `ifnone`
+----
+    \
+`IFNONE` is a `Special Operator [1.5]` that performs coalescing operations on `None`-assigned \
+`Potentially Unsafe Instances [2.1]` and also on `None`-assigned `Potentially Unsafe Resources 
+[2.2]`, which are protected by the `VoidSafe` `Special Agent [1.4]`.
+- Example:
+
+    ```python
+    >>> from voidsafe import VoidSafe, ifnone
+    >>> from typing import Any
+    >>> 
+    >>> testDict: dict[str, Any] = {'none': None, 'pi': 3.14}
+    >>> 
+    >>> # ['pi'] is already defined as 3.14
+    >>> VoidSafe(testDict)['pi'] << ifnone >> 123
+    3.14
+    >>> # now with an item that has been defined as 'None'
+    >>> testDict['none'] << ifnone >> 'content'
+    'content'
+    >>> 
+    >>> VoidSafe(testDict)['none'] = ifnone << 'first assignment'
+    >>> VoidSafe(testDict)['none'] = ifnone << 'second assignment' # not 'None' anymore
+    >>> 
+    >>> testDict['none']
+    'first assignment'
+    ```
+...
+"""
 
 @_IfVoidInfix
 def ifvoid(left: Any) -> _VoidCoalesce:
@@ -805,14 +901,39 @@ def ifvoid(left: Any) -> _VoidCoalesce:
     return _VoidCoalesce(left)
 
 IFVOID: Final[_IfVoidInfix] = ifvoid
+"""
+#### Aliases: `ifvoid`
+----
+    \
+`IFVOID` is a `Special Operator [1.5]` that merges the behavior of `ifndef` and `ifnone`
+Special Operators, coalescing both `None`-assigned resources and `Undefined` resources.
+- Example:
 
-
-
-
-
-
-
-
-
-
-
+    ```python
+    >>> from voidsafe import VoidSafe, ifvoid
+    >>> from typing import Any
+    >>> 
+    >>> testDict: dict[str, Any] = {'none': None, 'pi': 3.14}
+    >>> 
+    >>> # ['pi'] is already defined as 3.14
+    >>> VoidSafe(testDict)['pi'] << ifvoid >> 123
+    3.14
+    >>> # now with an item that has never been defined
+    >>> VoidSafe(testDict)['undefined'] << ifvoid >> 'content #1'
+    'content #1'
+    >>> # and with an item that has been defined as 'None'
+    >>> testDict['none'] << ifvoid >> 'content #2'
+    'content #2'
+    >>> 
+    >>> VoidSafe(testDict)['none'] = ifvoid << 'FIRST assignment #1'
+    >>> VoidSafe(testDict)['none'] = ifvoid << 'SECOND assignment #1' # not 'None' anymore
+    >>> VoidSafe(testDict)['undefined'] = ifvoid << 'FIRST assignment #2'
+    >>> VoidSafe(testDict)['undefined'] = ifvoid << 'SECOND assignment #2' # not 'Undefined' anymore
+    >>> 
+    >>> testDict['none']
+    'FIRST assignment #1'
+    >>> testDict['undefined']
+    'FIRST assignment #2'
+    ```
+...
+"""

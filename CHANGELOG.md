@@ -1,12 +1,23 @@
-# **Version 0** - Beta Version
-&nbsp;&nbsp;&nbsp;&nbsp; **Version 0** includes all the basic features 
+# **Version 0** - _Beta_
+&nbsp;&nbsp;&nbsp;&nbsp; **Version 0** includes all the basic features to perform **coalescing** operations, which helps assuring that **safe** can be done with **Potentially Unsafe Instances [2.1]** and their **Potentially Unsafe Resources [2.2]**.
 
 ----
+
+## Release `v0.2.0`
+&nbsp;&nbsp;&nbsp;&nbsp; This release includes an extensive documentation for the package, which covers the following scopes:
+
+- **Documentation:**
+
+    1. Finished covering declarations' `docstrings`;
+    2. Finished implementing `__repr__` methods;
+    3. Elaborated the `API.md` file;
+    4. Elaborated the content for the `/examples` directory;
+    5. Elaborated more on the `README.md`;
 
 ## Release `v0.1.1`
 &nbsp;&nbsp;&nbsp;&nbsp; In this release, the directory named "nonesafe" was renamed to "voidsafe" to match the module name.
 
-- **Bugs**
+- **Bugs:**
 
     1. Library directory does not match module name.
 

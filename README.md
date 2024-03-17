@@ -26,7 +26,11 @@
 
 ## Installation
 
-&nbsp;&nbsp;&nbsp;&nbsp; **voidsafe** will be added to **PyPi** soon...
+&nbsp;&nbsp;&nbsp;&nbsp; **VoidSafe** is on [**_PyPi_**](https://pypi.org/project/voidsafe/). You can install its latest version via `pip install` as follows:
+
+```console
+pip install voidsafe
+```
 
 ## Examples
 

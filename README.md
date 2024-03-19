@@ -24,7 +24,7 @@
 
 &nbsp;&nbsp;&nbsp;&nbsp; It is known that many professionals use Python as a **_practical_** tool, a **_means_** to achieve a result where the **_result_** holds the business value intended. Data scientists, mathmaticians and physicists often use Python as a "fancy calculator" or a "plotting tool" to elaborate and extract valuable data and information. It's easy to see that this library won't be able to contribute much to those use cases, it would probably only lead to a processing overhed during execution.
 
-&nbsp;&nbsp;&nbsp;&nbsp; But when it comes to Software Engineering, part of the business value is delivered in the form of **_code quality_**, **_maintainability_** and **_service availability_**, which can't be offered if your project is full of lines of code **_craving_** to **raise** **`Error`**s and **`Exception`**s. That is true especially for server-side applications that are supposed to run _24/7_ interacting with third-party services. This library intends to help software developers building up **_robust_** and **_reliable_** applications with Python3.
+&nbsp;&nbsp;&nbsp;&nbsp; But when it comes to Software Engineering, part of the business value is delivered in the form of **_code quality_**, **_maintainability_** and **_service availability_**, which can't be offered if your project is full of lines of code **_craving_** to **raise** **`Errors`** and **`Exceptions`**. That is true especially for server-side applications that are supposed to run _24/7_ interacting with third-party services. This library intends to help software developers building up **_robust_** and **_reliable_** applications with Python3.
 
 ## Installation
 
@@ -58,7 +58,7 @@ void main() {
 }
 ```   
 
-&nbsp;&nbsp;&nbsp;&nbsp; With the help of `voidsafe` package, the code above could be **_similarly_** brought up to Python like this:
+&nbsp;&nbsp;&nbsp;&nbsp; With the help of **`voidsafe`**, the code above could be **_similarly_** brought up to Python like this:
 
 ```python
 from voidsafe import VoidSafe, ifvoid, value

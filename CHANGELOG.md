@@ -4,7 +4,21 @@
 ----
 
 ## Release `v0.2.0`
-&nbsp;&nbsp;&nbsp;&nbsp; This release includes an extensive documentation for the package, which covers the following scopes:
+&nbsp;&nbsp;&nbsp;&nbsp; This release includes an extensive documentation for the package.
+
+### `#31` Python files Metadata
+> **Participants:** @gus-caribe, @felalmeida
+
+&nbsp;&nbsp;&nbsp;&nbsp; Added metadata to `.py` files located under `/examples`:
+
+- **Adaptation:**
+
+    1. Added `#!/usr/bin/env python3` _shebang_ on top of all files;
+    2. Added `# -*- coding: utf-8 -*-` encoding metadata comment right after _shebang_.
+
+### `#5` Library Documentation
+
+&nbsp;&nbsp;&nbsp;&nbsp; Added an extensive documentation, which covers the following scopes:
 
 - **Documentation:**
 

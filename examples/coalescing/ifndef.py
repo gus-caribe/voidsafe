@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 from voidsafe import VoidSafe, ifndef
 from voidsafe.unreliable import TAKEN_FOR_GRANTED
 from typing import Optional

@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 from voidsafe import VoidSafe, ifvoid, value
 from typing import Optional
 
